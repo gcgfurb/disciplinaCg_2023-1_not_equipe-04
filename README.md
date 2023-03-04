@@ -4,6 +4,9 @@ Para desenvolver as atividades da disciplina de Computação Gráfica favor util
 
 Alunos:  
 
+    Artur Dallagnelo  
+    Sezio Clener Nascimento  
+    
 ## [Atividades da Unidade 1](Unidade1/ "Atividades da Unidade 1")  
 
 ## [Atividades da Unidade 2](Unidade2/ "Atividades da Unidade 2")  
