@@ -82,14 +82,57 @@ namespace gcgcg
 
       Objeto objetoNovo = null;
 
-
-
- #region Objeto: Circulo 
-      objetoNovo = new Circulo(null, new Ponto4D(0, 0),0.5);
-      objetoNovo.PrimitivaTipo = PrimitiveType.Points;
+      #region Objeto: polígono qualquer  
+      objetoNovo = new Poligono(null);
+      objetoNovo.PontosAdicionar(new Ponto4D(0.25, 0.25));
+      objetoNovo.PontosAdicionar(new Ponto4D(0.75, 0.25));
+      objetoNovo.PontosAdicionar(new Ponto4D(0.75, 0.75));
+      objetoNovo.PontosAdicionar(new Ponto4D(0.50, 0.50));
+      objetoNovo.PontosAdicionar(new Ponto4D(0.25, 0.75));
       ObjetoNovo(objetoNovo); objetoNovo = null;
-     
- #endregion
+      #endregion
+      #region NÃO USAR: declara um objeto filho ao polígono
+      objetoNovo = new Ponto(null, new Ponto4D(0.50, 0.75));
+      ObjetoNovo(objetosLista[0], objetoNovo); objetoNovo = null;
+      #endregion
+
+      #region Objeto: retângulo  
+      objetoNovo = new Retangulo(null, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
+      objetoNovo.PrimitivaTipo = PrimitiveType.LineLoop;
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      #endregion
+
+      #region Objeto: segmento de reta  
+      objetoNovo = new SegReta(null, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      #endregion
+
+      #region Objeto: ponto  
+      objetoNovo = new Ponto(null, new Ponto4D(0.25, -0.25));
+      objetoNovo.PrimitivaTipo = PrimitiveType.Points;
+      objetoNovo.PrimitivaTamanho = 10;
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      #endregion
+
+#if CG_Privado
+      #region Objeto: circulo  
+      objetoNovo = new Circulo(null, 0.2, new Ponto4D());
+      objetoNovo.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      #endregion
+
+      #region Objeto: SrPalito  
+      objetoNovo = new SrPalito(null);
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      SrPalito objSrPalito = objetoSelecionado as SrPalito;
+      #endregion
+
+      #region Objeto: Spline
+      objetoNovo = new Spline(null);
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      Spline objSpline = objetoSelecionado as Spline;
+      #endregion
+#endif
 
     }
 
