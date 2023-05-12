@@ -22,9 +22,6 @@ namespace gcgcg
     private Objeto objetoSelecionado = null;
     private char rotulo = '@';
 
-    private List<PrimitiveType> tipos = new List<PrimitiveType>();
-    int index = 0; 
-
     private readonly float[] _sruEixos =
     {
       -0.5f,  0.0f,  0.0f, /* X- */      0.5f,  0.0f,  0.0f, /* X+ */
@@ -41,6 +38,15 @@ namespace gcgcg
 
     private bool _firstMove = true;
     private Vector2 _lastPos;
+
+
+    private double angulo {get; set;}
+
+    private double raio {get; set;}
+
+    private Ponto4D SRPY {get; set;}
+
+    private Ponto4D SRPX {get; set;}
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -63,12 +69,7 @@ namespace gcgcg
         objetoFilho.ObjetoAtualizar();
         objetoSelecionado = objetoFilho;
       }
-
-    
     }
- 
-
-
 
     protected override void OnLoad()
     {
@@ -90,32 +91,29 @@ namespace gcgcg
 
       Objeto objetoNovo = null;
 
+       angulo = 45;
+       raio = 0.5;
 
-      tipos.Add(PrimitiveType.Points);
-      tipos.Add(PrimitiveType.Lines);
-      tipos.Add(PrimitiveType.LineStrip);
-      tipos.Add(PrimitiveType.LineLoop);
-      tipos.Add(PrimitiveType.Triangles);
-      tipos.Add(PrimitiveType.TriangleStrip);
-      tipos.Add(PrimitiveType.TriangleFan);
+      SRPX = new Ponto4D(0,0);
+      SRPY = Matematica.GerarPtosCirculo(angulo, raio);
+         
 
-
-
-      #region Objeto: retângulo  
-      objetoNovo = new Retangulo(null, new Ponto4D(0.50, 0.50), new Ponto4D(-0.50, -0.50));
-      objetoNovo.PrimitivaTipo = PrimitiveType.Points;
+      #region Objeto: segmento de reta  
+      objetoNovo = new SegReta(null, SRPX, SRPY);
       ObjetoNovo(objetoNovo); objetoNovo = null;
+      //objetosLista.Add(objetoNovo);
+      //objetoSelecionado = objetoNovo ;
+
       #endregion
-
-    
-
  
+
+       
+
+      
 
 
 
     }
-
-    
 
     protected override void OnRenderFrame(FrameEventArgs e)
     {
@@ -141,66 +139,67 @@ namespace gcgcg
       if (input.IsKeyDown(Keys.Escape))
       {
         Close();
-      }
-      else
-      {
-        if (input.IsKeyDown(Keys.Right))
-        {
-          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.005, objetoSelecionado.PontosId(0).Y, 0), 0);
-          objetoSelecionado.ObjetoAtualizar();
+}
+    else
+    {
+        // Movimento para os lados
+        if (input.IsKeyDown(Keys.Q))
+        { 
+            SRPY.X--;
+            SRPX.X--;
+            ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPX, SRPY);
+           
         }
-        else
+        else if (input.IsKeyDown(Keys.W))
         {
-          if (input.IsKeyPressed(Keys.P))
-          {
-            Console.WriteLine(objetoSelecionado);
-          }
-          else
-          {
-            if (input.IsKeyPressed(Keys.Space))
-            {
+            SRPX.X++;
+            SRPY.X++;
+           ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPX, SRPY);
 
-              index ++;
-              if (index>=8)
-              index = 0;
-              objetoSelecionado.PrimitivaTipo = tipos[index];
-              
-              
+            
 
-              
-              /*
-              if (objetoSelecionado == null)
-                Console.WriteLine("objetoSelecionado: NULL!");
-              else if (objetosLista.Count == 0)
-                Console.WriteLine("objetoLista: vazia!");
-              else
-              {
-                int ind = 0;
-                foreach (var objetoNovo in objetosLista)
-                {
-                  if (objetoNovo == objetoSelecionado)
-                  {
-                    ind++;
-                    if (ind >= objetosLista.Count)
-                      ind = 0;
-                    break;
-                  }
-                  ind++;
-                }
-                objetoSelecionado = objetosLista[ind];
-              }*/
-            }
-            else
-            {
-              if (input.IsKeyPressed(Keys.C))
-              {
-                objetoSelecionado.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderCiano.frag");
-              }
-            }
-          }
         }
-      }
-      #endregion
+
+         
+        else if (input.IsKeyDown(Keys.A))
+        {
+            raio -= 0.01f; 
+            Ponto4D SRPXN = Matematica.GerarPtosCirculo(angulo, raio);
+            SRPX.X= SRPXN.X;
+            SRPX.Y= SRPXN.Y;
+            ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPXN, SRPY);
+        }
+        else if (input.IsKeyDown(Keys.S))
+        {
+            raio += 0.01f; 
+            Ponto4D SRPXN = Matematica.GerarPtosCirculo(angulo, raio);
+            SRPX.X= SRPXN.X;
+            SRPX.Y= SRPXN.Y;
+            ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPXN, SRPY);
+        }
+
+        
+        else if (input.IsKeyDown(Keys.Z))
+        {
+            angulo -= 1;
+            Ponto4D SRPXN = Matematica.GerarPtosCirculo(angulo, raio);
+            SRPX.X= SRPXN.X;
+            SRPX.Y= SRPXN.Y;
+            ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPXN, SRPY);
+        }
+        else if (input.IsKeyDown(Keys.X))
+        {
+            angulo += 1;
+                    Ponto4D SRPXN = Matematica.GerarPtosCirculo(angulo, raio);
+            SRPX.X= SRPXN.X;
+            SRPX.Y= SRPXN.Y;
+            ObjetoNovo (objetoSelecionado); objetoSelecionado = new SegReta(null, SRPXN, SRPY);
+        }
+
+        
+    }
+    #endregion
+
 
       #region  Mouse
       var mouse = MouseState;
