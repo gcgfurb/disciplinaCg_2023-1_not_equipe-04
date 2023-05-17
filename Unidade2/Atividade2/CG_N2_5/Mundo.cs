@@ -39,14 +39,11 @@ namespace gcgcg
     private bool _firstMove = true;
     private Vector2 _lastPos;
 
+    Ponto4D xyMin;
+    Ponto4D xyMax;
 
-    private double angulo {get; set;}
-
-    private double raio {get; set;}
-
-    private Ponto4D SRPY {get; set;}
-
-    private Ponto4D SRPX {get; set;}
+    Ponto4D pontoCirculoMaior;
+    Ponto4D pontoCirculoMenor;
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -91,27 +88,51 @@ namespace gcgcg
 
       Objeto objetoNovo = null;
 
-       angulo = 45;
-       raio = 0.5;
+            Ponto4D pontoCirculoMaior = new Ponto4D(0.25, 0.25);
+            Ponto4D pontoCirculoMenor = new Ponto4D(0.25, 0.25);
+            double raioCirculoMaior = 0.25;
 
-      SRPX = new Ponto4D(0,0);
-      SRPY = Matematica.GerarPtosCirculo(angulo, raio);
-         
+            #region Objeto: Círculo Menor
+            objetoNovo = new Circulo(null, pontoCirculoMenor, 0.1);
+            objetoNovo.PrimitivaTipo = PrimitiveType.LineLoop;
+            ObjetoNovo(objetoNovo); objetoNovo = null;
+            #endregion
 
+            #region Objeto: Ponto no centro do Círculo Menor
+            objetoNovo = new Ponto(null, new Ponto4D(pontoCirculoMenor.X, pontoCirculoMenor.Y));
+            objetoNovo.PrimitivaTipo = PrimitiveType.Points;
+            objetoNovo.PrimitivaTamanho = 10;
+            ObjetoNovo(objetoNovo); objetoNovo = null;
+            #endregion
+
+            #region Objeto: Círculo Maior
+            objetoNovo = new Circulo(null, pontoCirculoMaior, raioCirculoMaior);
+            objetoNovo.PrimitivaTipo = PrimitiveType.LineLoop;
+            ObjetoNovo(objetoNovo); objetoNovo = null;
+            #endregion
+
+            #region Objeto: Retângulo
+            double ladoRetangulo = Math.Sqrt(2) * raioCirculoMaior / 2.0;
+            Ponto4D xyMax = new Ponto4D(pontoCirculoMaior.X + ladoRetangulo, pontoCirculoMaior.Y + ladoRetangulo);
+            Ponto4D xyMin = new Ponto4D(pontoCirculoMaior.X - ladoRetangulo, pontoCirculoMaior.Y - ladoRetangulo);
+            objetoNovo = new Retangulo(null, xyMax, xyMin);
+            objetoNovo.PrimitivaTipo = PrimitiveType.LineLoop;
+            objetosLista.Add(objetoNovo);
+            #endregion
+/*
       #region Objeto: segmento de reta  
-      objetoNovo = new SegReta(null, SRPX, SRPY);
+      objetoNovo = new SegReta(null, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
       ObjetoNovo(objetoNovo); objetoNovo = null;
-      //objetosLista.Add(objetoNovo);
-      //objetoSelecionado = objetoNovo ;
-
       #endregion
- 
 
-       
+      #region Objeto: ponto  
+      objetoNovo = new Ponto(null, new Ponto4D(0.25, -0.25));
+      objetoNovo.PrimitivaTipo = PrimitiveType.Points;
+      objetoNovo.PrimitivaTamanho = 10;
+      ObjetoNovo(objetoNovo); objetoNovo = null;
+      #endregion
 
-      
-
-
+*/
 
     }
 
@@ -134,77 +155,61 @@ namespace gcgcg
     {
       base.OnUpdateFrame(e);
 
-#region Teclado
-
-        var input = KeyboardState;
-        if (input.IsKeyDown(Keys.Escape))
+      #region Teclado
+      var input = KeyboardState;
+      if (input.IsKeyDown(Keys.Escape))
+      {
+        Close();
+      }
+      else
+      {
+        if (input.IsKeyDown(Keys.Right))
         {
-            Close();
+          objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.005, objetoSelecionado.PontosId(0).Y, 0), 0);
+          objetoSelecionado.ObjetoAtualizar();
         }
         else
         {
-            // Movimento para os lados
-            if (input.IsKeyDown(Keys.Q))
-            { 
-                SRPY.X-=.0001;
-                SRPX.X-=.0001;
-               // objetoSelecionado.PontosAlterar(SRPX, 0);
-               // objetoSelecionado.PontosAlterar(SRPY, 1);
-               
-            }
-            else if (input.IsKeyDown(Keys.W))
+          if (input.IsKeyPressed(Keys.P))
+          {
+            Console.WriteLine(objetoSelecionado);
+          }
+          else
+          {
+            if (input.IsKeyPressed(Keys.Space))
             {
-                SRPX.X+=0.0001;
-                SRPY.X+=0.0001;
-             //  objetoSelecionado.PontosAlterar(SRPX, 0);
-             //   objetoSelecionado.PontosAlterar(SRPY, 1);
-           
+              if (objetoSelecionado == null)
+                Console.WriteLine("objetoSelecionado: NULL!");
+              else if (objetosLista.Count == 0)
+                Console.WriteLine("objetoLista: vazia!");
+              else
+              {
+                int ind = 0;
+                foreach (var objetoNovo in objetosLista)
+                {
+                  if (objetoNovo == objetoSelecionado)
+                  {
+                    ind++;
+                    if (ind >= objetosLista.Count)
+                      ind = 0;
+                    break;
+                  }
+                  ind++;
+                }
+                objetoSelecionado = objetosLista[ind];
+              }
             }
-
-            // Mudança de tamanho (raio)
-            else if (input.IsKeyDown(Keys.A))
+            else
             {
-            
-                raio -= 0.001; 
-                Ponto4D SRPYN = Matematica.GerarPtosCirculo(angulo, raio);
-                 SRPY.X = SRPYN.X;
-                SRPY.Y = SRPYN.Y;
-              //  objetoSelecionado.PontosAlterar(SRPY, 1);
-          
+              if (input.IsKeyPressed(Keys.C))
+              {
+                objetoSelecionado.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderCiano.frag");
+              }
             }
-            else if (input.IsKeyDown(Keys.S))
-            {
-                raio += 0.001; 
-                Ponto4D SRPYN = Matematica.GerarPtosCirculo(angulo, raio);
-                 SRPY.X = SRPYN.X;
-                SRPY.Y = SRPYN.Y;
-               // objetoSelecionado.PontosAlterar(SRPX, 1);
-            
-            }
-
-            // Mudança de ângulo
-            else if (input.IsKeyDown(Keys.Z))
-            {
-                angulo -= 0.01;
-                Ponto4D SRPYN = Matematica.GerarPtosCirculo(angulo, raio);
-                SRPY.X = SRPYN.X;
-                SRPY.Y = SRPYN.Y;
-              //objetoSelecionado.PontosAlterar(SRPYN, 1);
-             
-            }
-            else if (input.IsKeyDown(Keys.X))
-            {
-                angulo += 0.01;
-                Ponto4D SRPYN = Matematica.GerarPtosCirculo(angulo, raio);
-                 SRPY.X = SRPYN.X;
-                SRPY.Y = SRPYN.Y;
-            //    objetoSelecionado.PontosAlterar(SRPYN, 1);
-             
-            }
-            objetoSelecionado.ObjetoAtualizar();
+          }
         }
-        #endregion
-
+      }
+      #endregion
 
       #region  Mouse
       var mouse = MouseState;
@@ -289,3 +294,5 @@ namespace gcgcg
 
   }
 }
+
+
