@@ -10,6 +10,8 @@ namespace gcgcg
 {
   internal class Objeto
   {
+
+    //teste
     // Objeto
     protected char rotulo;
     public char Rotulo { get => rotulo; set => rotulo = value; }
