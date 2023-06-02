@@ -123,6 +123,11 @@ namespace gcgcg
       objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
       #endregion
 
+
+
+
+      
+
       // #region Objeto: segmento de reta  
       // objetoSelecionado = new SegReta(mundo, ref rotuloNovo, new Ponto4D(-0.5, -0.5), new Ponto4D());
       // #endregion
@@ -178,6 +183,11 @@ namespace gcgcg
         objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
         objetoSelecionado.shaderCor = _shaderAmarela;
       }
+      
+      if (input.IsKeyPressed(Keys.D) && objetoSelecionado != null){
+          mundo.RemoverObjetoSelecionado(objetoSelecionado);
+      }
+
       if (input.IsKeyPressed(Keys.G))
         mundo.GrafocenaImprimir("");
       if (input.IsKeyPressed(Keys.P) && objetoSelecionado != null)
@@ -213,6 +223,9 @@ namespace gcgcg
         objetoSelecionado.MatrizRotacaoZBBox(-10);
       #endregion
 
+      
+
+
       #region  Mouse
 
       if (MouseState.IsButtonPressed(MouseButton.Left))
@@ -241,6 +254,8 @@ namespace gcgcg
       #endregion
 
     }
+
+   
 
     protected override void OnResize(ResizeEventArgs e)
     {

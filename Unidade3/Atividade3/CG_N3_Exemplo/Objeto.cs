@@ -127,6 +127,10 @@ namespace gcgcg
       this.objetosLista.Add(filho);
     }
 
+    public void RemoverObjetoSelecionado(Objeto objetoSelecionado){
+      objetosLista.Remove(objetoSelecionado);
+    }
+
     public Ponto4D PontosId(int id)
     {
       return pontosLista[id];
