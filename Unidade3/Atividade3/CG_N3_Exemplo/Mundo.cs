@@ -187,6 +187,16 @@ namespace gcgcg
       if (input.IsKeyPressed(Keys.D) && objetoSelecionado != null){
           mundo.RemoverObjetoSelecionado(objetoSelecionado);
       }
+      if (input.IsKeyPressed(Keys.R) && objetoSelecionado != null){
+          objetoSelecionado.shaderCor = _shaderVermelha;
+      }
+      if (input.IsKeyPressed(Keys.G) && objetoSelecionado != null){
+          objetoSelecionado.shaderCor = _shaderVerde;
+      }
+      if (input.IsKeyPressed(Keys.B) && objetoSelecionado != null){
+          objetoSelecionado.shaderCor = _shaderAzul;
+      }
+
 
       if (input.IsKeyPressed(Keys.G))
         mundo.GrafocenaImprimir("");
@@ -198,7 +208,7 @@ namespace gcgcg
       if (input.IsKeyPressed(Keys.I) && objetoSelecionado != null)
         objetoSelecionado.MatrizAtribuirIdentidade();
       if (input.IsKeyPressed(Keys.Left) && objetoSelecionado != null)
-        objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0);
+        objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0); 
       if (input.IsKeyPressed(Keys.Right) && objetoSelecionado != null)
         objetoSelecionado.MatrizTranslacaoXYZ(0.05, 0, 0);
       if (input.IsKeyPressed(Keys.Up) && objetoSelecionado != null)
