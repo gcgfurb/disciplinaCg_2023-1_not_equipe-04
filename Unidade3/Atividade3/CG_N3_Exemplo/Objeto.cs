@@ -142,6 +142,38 @@ namespace gcgcg
       ObjetoAtualizar();
     }
 
+    public bool ScanLine (Ponto4D ptoC)
+    {
+      int i = 1; 
+      
+      int count =0; 
+      
+      foreach (var pto in pontosLista)
+      {
+        var ti =((ptoC.Y - pto.Y) / (pontosLista[i].Y - pto.Y));
+        if (ti >=0 && ti <= 1)
+        {
+          var xi = (pto.X +(pontosLista[i].X - pto.X) * ti);
+          if (xi > ptoC.X)
+          {
+            count++;
+          }
+        }
+        i++;
+        if (i== pontosLista.Count)
+        {
+          i=0;
+        }
+
+      }
+      if (count % 2 == 0) 
+      {
+        return false;
+        
+      }
+      return true;
+    }
+
     public void PontosAlterar(Ponto4D pto, int posicao)
     {
       pontosLista[posicao] = pto;

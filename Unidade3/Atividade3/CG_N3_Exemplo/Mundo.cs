@@ -32,6 +32,8 @@ namespace gcgcg
     private int _vertexBufferObject_sruEixos;
     private int _vertexArrayObject_sruEixos;
 
+   
+
     private Shader _shaderBranca;
     private Shader _shaderVermelha;
     private Shader _shaderVerde;
@@ -39,6 +41,10 @@ namespace gcgcg
     private Shader _shaderCiano;
     private Shader _shaderMagenta;
     private Shader _shaderAmarela;
+
+
+    List<Ponto4D> pontosPoligono= new List<Ponto4D>();
+    
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -122,7 +128,12 @@ namespace gcgcg
       objetoSelecionado = new Retangulo(mundo, ref rotuloNovo, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
       objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
       #endregion
-
+      
+     /* #region  poligono 
+      
+      
+      objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
+      #endregion */
 
 
 
@@ -175,6 +186,20 @@ namespace gcgcg
       // ☞ 396c2670-8ce0-4aff-86da-0f58cd8dcfdc   TODO: forma otimizada para teclado.
       #region Teclado
       var input = KeyboardState;
+
+      if (input.IsKeyPressed(Keys.Enter))
+      {
+              
+    
+     objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
+     System.Console.WriteLine(pontosPoligono);
+
+
+      }
+
+
+
+
       if (input.IsKeyDown(Keys.Escape))
         Close();
       if (input.IsKeyPressed(Keys.Space) && objetoSelecionado != null)
@@ -196,6 +221,10 @@ namespace gcgcg
       if (input.IsKeyPressed(Keys.B) && objetoSelecionado != null){
           objetoSelecionado.shaderCor = _shaderAzul;
       }
+       if (input.IsKeyPressed(Keys.S) && objetoSelecionado != null){
+          objetoSelecionado.shaderCor = _shaderAzul;
+      }
+      
 
 
       if (input.IsKeyPressed(Keys.G))
@@ -231,6 +260,15 @@ namespace gcgcg
         objetoSelecionado.MatrizRotacaoZBBox(10);
       if (input.IsKeyPressed(Keys.D4) && objetoSelecionado != null)
         objetoSelecionado.MatrizRotacaoZBBox(-10);
+
+
+      
+
+      
+
+
+
+
       #endregion
 
       
@@ -240,6 +278,18 @@ namespace gcgcg
 
       if (MouseState.IsButtonPressed(MouseButton.Left))
       {
+        int janelaLargura = Size.X;
+        int janelaAltura = Size.Y;
+        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+
+
+         pontosPoligono.Add(sruPonto);
+       
+            
+    
+
+
         System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
         System.Console.WriteLine("__ Valores do Espaço de Tela");
         System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
