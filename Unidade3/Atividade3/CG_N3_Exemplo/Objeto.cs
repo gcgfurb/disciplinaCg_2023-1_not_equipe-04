@@ -71,6 +71,13 @@ namespace gcgcg
       }
     }
 
+   public void removerUltimoPonto(List<Ponto4D> pontos)
+{
+    pontosLista.RemoveAt(pontos.Count - 1);
+    ObjetoAtualizar();
+}
+    
+
     public void ObjetoAtualizar()
     {
       float[] vertices = new float[pontosLista.Count * 3];
@@ -122,6 +129,11 @@ namespace gcgcg
 
     #region Objeto: CRUD
 
+      public Ponto4D UltimoPonto()
+    {
+      return pontosLista[pontosLista.Count ];
+    }
+
     public void FilhoAdicionar(Objeto filho)
     {
       this.objetosLista.Add(filho);
@@ -135,6 +147,9 @@ namespace gcgcg
     {
       return pontosLista[id];
     }
+
+
+
 
     public void PontosAdicionar(Ponto4D pto)
     {
@@ -179,6 +194,56 @@ namespace gcgcg
       pontosLista[posicao] = pto;
       ObjetoAtualizar();
     }
+
+    public void PontosRemover(Ponto4D pto)
+    {
+      pontosLista.Remove(pto);
+      ObjetoAtualizar();
+    }
+
+
+       public Ponto4D CalculaPontoProximo(Ponto4D Ponto)
+    {
+        Ponto4D ptoMaisProximo = null;
+        double distanciaPtoMaisProximo = double.MaxValue;
+        foreach (var pto in pontosLista)
+        {
+            double distancia = ((Ponto.X - pto.X) * (Ponto.X - pto.X) + (Ponto.Y - pto.Y) * (Ponto.Y - pto.Y));
+             if (distancia < distanciaPtoMaisProximo) {
+                distanciaPtoMaisProximo = distancia;
+                ptoMaisProximo = pto;
+             }
+        }
+
+       return ptoMaisProximo;
+    }
+
+    public int ptoProximo(Ponto4D ponto)
+    {
+
+        int posicao = pontosLista.IndexOf(ponto);
+      return posicao;
+    }
+
+public Objeto VerificaBBox(Ponto4D pto)
+
+{
+  
+    foreach (var objeto in objetosLista)
+    {
+        if (pto.X > objeto.bBox.obterMenorX && pto.X < objeto.bBox.obterMaiorX)
+        {
+            if (pto.Y > objeto.bBox.obterMenorY && pto.Y < objeto.bBox.obterMaiorY)
+            {
+                return objeto;
+            }
+        }
+    }
+
+    return null;
+}
+
+
 
     #endregion
 

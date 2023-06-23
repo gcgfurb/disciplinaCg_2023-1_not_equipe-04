@@ -43,7 +43,15 @@ namespace gcgcg
     private Shader _shaderAmarela;
 
 
-    List<Ponto4D> pontosPoligono= new List<Ponto4D>();
+
+      List<Ponto4D> pontosPoligono= new List<Ponto4D>();
+
+    Ponto4D ultimmoP {get;set;}
+    Ponto4D pUltimmoP {get;set;}
+
+
+
+    
     
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
@@ -129,12 +137,10 @@ namespace gcgcg
       objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
       #endregion
       
-     /* #region  poligono 
-      
-      
-      objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
-      #endregion */
+      //#region  poligono
 
+     // objetoSelecionado = new Poligono(mundo, ref rotuloNovo, PontosPoligono);
+      //#endregion 
 
 
       
@@ -187,19 +193,6 @@ namespace gcgcg
       #region Teclado
       var input = KeyboardState;
 
-      if (input.IsKeyPressed(Keys.Enter))
-      {
-              
-    
-     objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
-     System.Console.WriteLine(pontosPoligono);
-
-
-      }
-
-
-
-
       if (input.IsKeyDown(Keys.Escape))
         Close();
       if (input.IsKeyPressed(Keys.Space) && objetoSelecionado != null)
@@ -208,6 +201,47 @@ namespace gcgcg
         objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
         objetoSelecionado.shaderCor = _shaderAmarela;
       }
+
+            if (input.IsKeyPressed(Keys.Enter))
+            
+
+      {
+        List<Ponto4D> aux= new List<Ponto4D>(pontosPoligono);
+        if (objetoSelecionado == null)
+        {
+        objetoSelecionado= mundo;
+  
+        
+      if (pontosPoligono.Count < 1){
+     
+        objetoSelecionado.removerUltimoPonto(aux);
+      }
+        }
+        else 
+        {
+        
+        objetoSelecionado.FilhoAdicionar(mundo);
+        objetoSelecionado = mundo;
+          
+           if (pontosPoligono.Count < 1){
+     
+        objetoSelecionado.removerUltimoPonto(aux);
+           }
+      }
+
+  
+     #region Objeto: poligono  
+     objetoSelecionado = new Poligono(mundo, ref rotuloNovo, aux);
+     
+     //mundo = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
+    #endregion
+
+   // objetoSelecionado=null; 
+    pontosPoligono.Clear();
+ 
+      }
+      
+
       
       if (input.IsKeyPressed(Keys.D) && objetoSelecionado != null){
           mundo.RemoverObjetoSelecionado(objetoSelecionado);
@@ -221,8 +255,61 @@ namespace gcgcg
       if (input.IsKeyPressed(Keys.B) && objetoSelecionado != null){
           objetoSelecionado.shaderCor = _shaderAzul;
       }
-       if (input.IsKeyPressed(Keys.S) && objetoSelecionado != null){
-          objetoSelecionado.shaderCor = _shaderAzul;
+
+      
+       if (input.IsKeyPressed(Keys.S)) {
+ 
+        int janelaLargura = Size.X;
+        int janelaAltura = Size.Y;
+        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+        Objeto verificaObj= mundo.VerificaBBox(sruPonto);
+        objetoSelecionado=verificaObj;
+
+    
+        if (objetoSelecionado==null) {
+         
+          Console.WriteLine("A");   
+         }
+         else 
+          {
+          bool dentro =verificaObj.ScanLine(sruPonto); 
+          if (dentro==false)
+            {
+           objetoSelecionado= null;
+            Console.WriteLine("b");
+            }
+            else 
+            {
+              objetoSelecionado=verificaObj;
+              
+
+              objetoSelecionado.Bbox();
+              
+             Console.WriteLine("c");
+            }
+          }
+    }
+      
+      if (input.IsKeyPressed(Keys.E)){
+
+        int janelaLargura = Size.X;
+        int janelaAltura = Size.Y;
+        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+
+      Ponto4D  vertice = objetoSelecionado.CalculaPontoProximo(sruPonto);
+      objetoSelecionado.PontosRemover(vertice);
+      }
+       if (input.IsKeyPressed(Keys.P) && objetoSelecionado != null){
+        if (objetoSelecionado.PrimitivaTipo == PrimitiveType.LineLoop)
+        {
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.LineStrip;
+        }
+        else{
+          objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+        }
+          
       }
       
 
@@ -283,28 +370,33 @@ namespace gcgcg
         Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
         Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
 
+        pontosPoligono.Add(sruPonto); 
+        pontosPoligono.Add(sruPonto); 
+        System.Console.WriteLine("aaaaaaaaaa");
+        
 
-         pontosPoligono.Add(sruPonto);
-       
-            
+           
     
-
-
-        System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
+       
+      /* System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
         System.Console.WriteLine("__ Valores do Espaço de Tela");
         System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
-        System.Console.WriteLine("Vector2i windowSize: " + Size);
+        System.Console.WriteLine("Vector2i windowSize: " + Size);*/
       }
+      
       if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
       {
         System.Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
-
+       
         int janelaLargura = Size.X;
         int janelaAltura = Size.Y;
         Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
         Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+        Ponto4D  MP = objetoSelecionado.CalculaPontoProximo(sruPonto);        
 
-        objetoSelecionado.PontosAlterar(sruPonto, 0);
+       int posicao= objetoSelecionado.ptoProximo(MP);
+
+        objetoSelecionado.PontosAlterar(sruPonto,posicao);
       }
       if (MouseState.IsButtonReleased(MouseButton.Right))
       {
