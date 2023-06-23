@@ -46,9 +46,7 @@ namespace gcgcg
 
       List<Ponto4D> pontosPoligono= new List<Ponto4D>();
 
-    Ponto4D ultimmoP {get;set;}
-    Ponto4D pUltimmoP {get;set;}
-
+    
 
 
     
@@ -207,6 +205,9 @@ namespace gcgcg
 
       {
         List<Ponto4D> aux= new List<Ponto4D>(pontosPoligono);
+        
+        
+        
         if (objetoSelecionado == null)
         {
         objetoSelecionado= mundo;
@@ -220,7 +221,7 @@ namespace gcgcg
         else 
         {
         
-        objetoSelecionado.FilhoAdicionar(mundo);
+        //objetoSelecionado.FilhoAdicionar(mundo);
         objetoSelecionado = mundo;
           
            if (pontosPoligono.Count < 1){
@@ -232,6 +233,7 @@ namespace gcgcg
   
      #region Objeto: poligono  
      objetoSelecionado = new Poligono(mundo, ref rotuloNovo, aux);
+     mundo.FilhoAdicionar(objetoSelecionado);
      
      //mundo = new Poligono(mundo, ref rotuloNovo, pontosPoligono);
     #endregion
@@ -286,6 +288,7 @@ namespace gcgcg
 
               objetoSelecionado.Bbox();
               
+                            
              Console.WriteLine("c");
             }
           }
@@ -372,7 +375,10 @@ namespace gcgcg
 
         pontosPoligono.Add(sruPonto); 
         pontosPoligono.Add(sruPonto); 
+        
+        
         System.Console.WriteLine("aaaaaaaaaa");
+        
         
 
            
