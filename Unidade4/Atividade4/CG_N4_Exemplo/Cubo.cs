@@ -28,12 +28,12 @@ namespace gcgcg
       };
 
     int[] ponto = {
-      2, 1, 0, 3,
-      3, 2, 6, 7,
-      7, 6, 5, 4,
-      4, 7, 3, 0,
-      0, 4, 5, 1,
-      1, 5, 6, 2
+      0,1,2,3,0,
+      2,1,5,6,2,
+      6,5,4,7,6,
+      0,3,7,4,0,
+      3,2,6,7,3,
+      0,4,5,1,0
     };
     
     int n = 0;
@@ -42,7 +42,8 @@ namespace gcgcg
       base.PontosAdicionar(pontos[ponto[n+1]]);
       base.PontosAdicionar(pontos[ponto[n+2]]);
       base.PontosAdicionar(pontos[ponto[n+3]]);
-      n = i*4;
+      base.PontosAdicionar(pontos[ponto[n+4]]);
+      n = i*5;
     }
       Atualizar();
     }
